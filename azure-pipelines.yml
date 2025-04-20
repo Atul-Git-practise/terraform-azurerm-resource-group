@@ -6,29 +6,58 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  TF_CLOUD_ORGANIZATION: 'My-tf-Organization1711'
+  TF_WORKSPACE: 'Azure-Infra-Dev'
+  TF_API_TOKEN: $(TF_API_TOKEN) # Store this securely in Azure DevOps pipeline variables
+  AZURE_CLIENT_ID: $(AZURE_CLIENT_ID) # Store this securely in Azure DevOps pipeline variables
+  AZURE_CLIENT_SECRET: $(AZURE_CLIENT_SECRET) # Store this securely in Azure DevOps pipeline variables
+  AZURE_TENANT_ID: $(AZURE_TENANT_ID) # Store this securely in Azure DevOps pipeline variables
+  AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID) # Store this securely in Azure DevOps pipeline variables
+
 steps:
-  # Step 1: Install Terraform
-  - task: UseTerraform@0
+  - task: UsePythonVersion@0
     inputs:
-      terraformVersion: 'latest'
+      versionSpec: '3.x'
+      addToPath: true
 
-  # Step 2: Initialize Terraform
-  - script: |
-      terraform init
-    displayName: 'Terraform Init'
+  - task: Bash@3
+    displayName: 'Install Terraform CLI'
+    inputs:
+      targetType: 'inline'
+      script: |
+        sudo apt-get update && sudo apt-get install -y unzip
+        curl -o terraform.zip https://releases.hashicorp.com/terraform/1.5.0/terraform_1.5.0_linux_amd64.zip
+        unzip terraform.zip
+        sudo mv terraform /usr/local/bin/
+        terraform --version
 
-  # Step 3: Validate Terraform
-  - script: |
-      terraform validate
-    displayName: 'Terraform Validate'
+  - task: Bash@3
+    displayName: 'Authenticate to Terraform Cloud'
+    inputs:
+      targetType: 'inline'
+      script: |
+        echo $TF_API_TOKEN > ~/.terraformrc
+        echo "credentials \"app.terraform.io\" { token = \"$TF_API_TOKEN\" }" > ~/.terraformrc
 
-  # Step 4: Test Module
-  - script: |
-      terraform plan -var="resource_group_name=test-rg" -var="location=East US"
-    displayName: 'Terraform Plan'
+  - task: Bash@3
+    displayName: 'Initialize Terraform'
+    inputs:
+      targetType: 'inline'
+      script: |
+        terraform init
 
-  # Step 5: Publish to Terraform Registry
-  - script: |
-      git tag v1.0.0
-      git push origin v1.0.0
-    displayName: 'Publish Module'
+  - task: Bash@3
+    displayName: 'Validate Terraform'
+    inputs:
+      targetType: 'inline'
+      script: |
+        terraform validate
+
+  - task: Bash@3
+    displayName: 'Publish Module to Terraform Registry'
+    inputs:
+      targetType: 'inline'
+      script: |
+        terraform login
+        terraform publish
