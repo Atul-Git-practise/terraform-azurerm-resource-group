@@ -34,22 +34,19 @@ steps:
         echo "credentials \"app.terraform.io\" { token = \"$(TF_API_TOKEN)\" }" > ~/.terraformrc
 
   - task: Bash@3
-    displayName: 'Initialize Terraform'
+    displayName: 'Validate Terraform Module'
     inputs:
       targetType: 'inline'
       script: |
         terraform init
-
-  - task: Bash@3
-    displayName: 'Validate Terraform'
-    inputs:
-      targetType: 'inline'
-      script: |
         terraform validate
 
   - task: Bash@3
-    displayName: 'Publish Module to Terraform Registry'
+    displayName: 'Tag the Module for Release'
     inputs:
       targetType: 'inline'
       script: |
-        terraform publish
+        git config user.name "Azure DevOps"
+        git config user.email "atulhexa430@gmail.com"
+        git tag v1.0.0 # Replace with your desired version
+        git push origin v1.0.0
