@@ -52,5 +52,4 @@ steps:
     inputs:
       targetType: 'inline'
       script: |
-        terraform login
         terraform publish
