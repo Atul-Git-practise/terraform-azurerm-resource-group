@@ -9,9 +9,6 @@ pool:
 variables:
   - group: TerraformVariables # Replace with the name of your variable group
   
-  TF_CLOUD_ORGANIZATION: 'My-tf-Organization1711'
-  TF_WORKSPACE: 'Azure-Infra-Dev'
-  
 
 steps:
   - task: UsePythonVersion@0
