@@ -47,7 +47,7 @@ steps:
     inputs:
       targetType: 'inline'
       script: |
-        cd Modules # Ensure the pipeline is in the correct directory
+        cd Modules # Ensure the pipeline is in the correct directory.
         git config user.name "Azure DevOps"
         git config user.email "atulsm1711@gmail.com"
         git tag v1.0.0 # Replace with your desired version
