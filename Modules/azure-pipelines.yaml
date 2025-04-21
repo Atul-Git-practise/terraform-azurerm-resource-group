@@ -1,0 +1,52 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - group: Terraform Variables # Replace with the name of your variable group
+
+steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.x'
+      addToPath: true
+
+  - task: Bash@3
+    displayName: 'Install Terraform CLI'
+    inputs:
+      targetType: 'inline'
+      script: |
+        sudo apt-get update && sudo apt-get install -y unzip
+        curl -o terraform.zip https://releases.hashicorp.com/terraform/1.11.3/terraform_1.11.3_linux_amd64.zip
+        unzip terraform.zip
+        sudo mv terraform /usr/local/bin/
+        terraform --version
+
+  - task: Bash@3
+    displayName: 'Authenticate to Terraform Cloud'
+    inputs:
+      targetType: 'inline'
+      script: |
+        echo "credentials \"app.terraform.io\" { token = \"$(TF_API_TOKEN)\" }" > ~/.terraformrc
+
+  - task: Bash@3
+    displayName: 'Validate Terraform Module'
+    inputs:
+      targetType: 'inline'
+      script: |
+        terraform init
+        terraform validate
+
+  - task: Bash@3
+    displayName: 'Tag the Module for Release'
+    inputs:
+      targetType: 'inline'
+      script: |
+        git config user.name "Azure DevOps"
+        git config user.email "atulsm1711@gmail.com"
+        git tag v1.0.0 # Replace with your desired version
+        git push origin v1.0.0
