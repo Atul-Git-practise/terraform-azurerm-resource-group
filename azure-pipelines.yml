@@ -21,7 +21,7 @@ steps:
       targetType: 'inline'
       script: |
         sudo apt-get update && sudo apt-get install -y unzip
-        curl -o terraform.zip https://releases.hashicorp.com/terraform/1.5.0/terraform_1.5.0_linux_amd64.zip
+        curl -o terraform.zip https://releases.hashicorp.com/terraform/1.11.3/terraform_1.11.3_linux_amd64.zip
         unzip terraform.zip
         sudo mv terraform /usr/local/bin/
         terraform --version
@@ -47,6 +47,6 @@ steps:
       targetType: 'inline'
       script: |
         git config user.name "Azure DevOps"
-        git config user.email "atulhexa430@gmail.com"
+        git config user.email "atulsm1711@gmail.com"
         git tag v1.0.0 # Replace with your desired version
         git push origin v1.0.0
