@@ -7,7 +7,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  - group: TerraformVariables # Replace with the name of your variable group
+  - group: Terraform Variables # Replace with the name of your variable group
   
 
 steps:
