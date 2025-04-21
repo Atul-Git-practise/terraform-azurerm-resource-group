@@ -7,13 +7,11 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
+  - group: TerraformVariables # Replace with the name of your variable group
+  
   TF_CLOUD_ORGANIZATION: 'My-tf-Organization1711'
   TF_WORKSPACE: 'Azure-Infra-Dev'
-  TF_API_TOKEN: $(TF_API_TOKEN) # Store this securely in Azure DevOps pipeline variables
-  AZURE_CLIENT_ID: $(AZURE_CLIENT_ID) # Store this securely in Azure DevOps pipeline variables
-  AZURE_CLIENT_SECRET: $(AZURE_CLIENT_SECRET) # Store this securely in Azure DevOps pipeline variables
-  AZURE_TENANT_ID: $(AZURE_TENANT_ID) # Store this securely in Azure DevOps pipeline variables
-  AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID) # Store this securely in Azure DevOps pipeline variables
+  
 
 steps:
   - task: UsePythonVersion@0
